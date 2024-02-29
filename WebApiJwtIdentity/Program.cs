@@ -6,12 +6,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Threading.RateLimiting;
 using WebApiJwtIdentity.Contexts;
 using WebApiJwtIdentity.Models;
 using WebApiJwtIdentity.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddIdentity<ExtendedIdentityUser, IdentityRole>(options =>
@@ -20,6 +22,11 @@ builder.Services.AddIdentity<ExtendedIdentityUser, IdentityRole>(options =>
     options.Password.RequiredLength = 5;
 }).AddEntityFrameworkStores<AuthDemoDbContext>()
 .AddDefaultTokenProviders();
+
+// Inicio Logging según https://stackify.com/net-core-loggerfactory-use-correctly/
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+// Fin Logging según https://stackify.com/net-core-loggerfactory-use-correctly/
 
 using var loggerFactory = LoggerFactory.Create(b => b.SetMinimumLevel(LogLevel.Trace).AddConsole());
 
