@@ -1,0 +1,27 @@
+@WebApiJwtIdentity_HostAddress = https://localhost:7056
+
+@username = "user2@example.com"
+@pwd="string12345_A"
+
+GET {{WebApiJwtIdentity_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{WebApiJwtIdentity_HostAddress}}/api/test
+
+###
+
+GET {{WebApiJwtIdentity_HostAddress}}/api/test/AuthorizedTest
+
+###
+
+POST {{WebApiJwtIdentity_HostAddress}}/api/auth/Login
+Content-Type: application/json
+
+{
+  "username": {{username}},
+  "password": {{pwd}}
+}
+
+###
