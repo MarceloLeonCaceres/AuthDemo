@@ -1,25 +1,19 @@
+using ApiProperJwt3.ErrorsHandler;
+using ApiProperJwt3.StartupConfig;
+using EfData;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using WebApiJwtIdentity.Contexts;
-using WebApiJwtIdentity.Models;
-using WebApiJwtIdentity.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddIdentity<ExtendedIdentityUser, IdentityRole>(options =>
-{
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 5;
-}).AddEntityFrameworkStores<AuthDemoDbContext>()
-.AddDefaultTokenProviders();
+ServicesConfig.AddIdentityServices(builder);
 
 using var loggerFactory = LoggerFactory.Create(b => b.SetMinimumLevel(LogLevel.Trace).AddConsole());
 
@@ -52,54 +46,29 @@ builder.Services.AddAuthentication(options =>
 });
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+ServicesConfig.AddSwaggerServices(builder);
 
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        Name = "Authorization",
-        Description = "JWT Authorization header",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT"
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{ }
-        }
-    });
-});
 
-builder.Services.AddDbContext<AuthDemoDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IAuthService, AuthService>();
+ServicesConfig.AddDataRepositoryServices(builder);
+ServicesConfig.AddHealthChecks(builder);
+ServicesConfig.AddCorsService(builder);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("DefaultPolicy", p =>
-    {
-        p.AllowAnyHeader();
-        p.AllowAnyMethod();
-        p.AllowAnyOrigin();
-    });
-});
+// Global Exception Handler
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -111,11 +80,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("Default");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+}).AllowAnonymous();
+app.MapHealthChecksUI();
 
 app.Run();
 

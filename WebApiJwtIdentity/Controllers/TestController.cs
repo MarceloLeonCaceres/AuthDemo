@@ -19,7 +19,7 @@ namespace WebApiJwtIdentity.Controllers
         [Authorize]
         public IActionResult AuthorizedTest()
         {
-            var authorizationHeader = this.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var authorizationHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
             if(authorizationHeader is null)
             {
