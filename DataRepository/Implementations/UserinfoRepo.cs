@@ -3,8 +3,10 @@ using EfData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.DTOs;
+using Models.DTOs.AuthAppUser;
 using Models.Entities;
 using Models.Entities.Enums;
+using Models.Mappers;
 
 namespace DataRepository.Implementations
 {
@@ -20,31 +22,40 @@ namespace DataRepository.Implementations
                 Name = u.Name,
                 DeptName = u.Department.DeptName,
                 Email = u.Email,
+                EsAppUser = u.AppUser != null
             }).ToListAsync();
             return userinfos;
         }
 
-        public async Task<Userinfo?> GetUserinfoByUserIdAsync(int userid)
+        public async Task<UserinfoDto?> GetUserinfoByUserIdAsync(int userid)
         {
             var userinfo = await context.Usersinfo
                 .Include(u => u.Department)
-                .SingleOrDefaultAsync(u => u.UserinfoId == userid);
+                .SingleAsync(u => u.UserinfoId == userid);
+
+            UserinfoDto userDto = userinfo.ToUserinfoDto();
             if (userinfo == null)
             {
                 logger.LogInformation($"Usuario con id {userid} no existe.");
                 return null;
             }
-            return userinfo;
+            return userDto;
         }
 
         public async Task<Userinfo?> GetUserinfoByBadgenumberAsync(string badgenumber)
         {
+            bool existeUserinfo = await context.Usersinfo.AnyAsync(u => u.Badgenumber == badgenumber);
+            if(existeUserinfo == false)
+            {
+                logger.LogInformation($"Usuario con código {badgenumber} no existe.");
+                return null;
+            }
             var userinfo = await context.Usersinfo
                 .Include(u => u.Department)
                 .FirstAsync(u => u.Badgenumber == badgenumber);
             if (userinfo == null)
             {
-                logger.LogInformation($"Usuario con código {badgenumber} no existe.");
+                logger.LogInformation($"Usuario (d) con código {badgenumber} no existe.");
                 return null;
             }
             return userinfo;
@@ -54,14 +65,15 @@ namespace DataRepository.Implementations
             var userinfos = await context.Usersinfo
                 .Include(u => u.Department)
                 .Where(u => u.DepartmentId == deptId)
+                .AsNoTracking()
                 .ToListAsync();
             return userinfos;
         }
 
         public async Task<Userinfo?> CreateUserinfoAsync(UserinfoCreateFromBiometricoDto createUserinfo)
         {
-            var idDeptoRaiz = await context.Departments.FirstOrDefaultAsync(d => d.IdPadre == 0);
-            if (idDeptoRaiz == null)
+            var deptoRaiz = await context.Departments.FirstOrDefaultAsync(d => d.IdPadre == 0);
+            if (deptoRaiz == null)
             {
                 logger.LogInformation($"No existe el departamento indicado.");
                 return null;
@@ -70,13 +82,48 @@ namespace DataRepository.Implementations
             {
                 Badgenumber = createUserinfo.Badgenumber,
                 Name = createUserinfo.Name,
-                DepartmentId = idDeptoRaiz.Id
+                DepartmentId = deptoRaiz.Id
             };
             try
             {
                 await context.Usersinfo.AddAsync(userinfo);
                 await context.SaveChangesAsync();
                 return userinfo;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<Userinfo?> UpdateUserinfoFromAppUser(CreateAppUserDeCeroDto createAppUserDeCero)
+        {
+            bool existeDepto = await context.Departments.AnyAsync(d => d.Id == createAppUserDeCero.DepartmentId);
+            if (existeDepto == false)
+            {
+                logger.LogInformation($"No existe el departamento indicado");
+                return null;
+            }
+            var userinfoNuevo = createAppUserDeCero.ToUserinfo();            
+            try
+            {
+                var userinfoExistente = await context.Usersinfo
+                .SingleAsync(u => u.Badgenumber == createAppUserDeCero.Badgenumber);
+                if (userinfoExistente is null)
+                {
+                    await context.Usersinfo.AddAsync(userinfoNuevo);
+                    await context.SaveChangesAsync();
+                    return userinfoNuevo;
+                }
+                else
+                {
+                    userinfoExistente.DepartmentId = createAppUserDeCero.DepartmentId;
+                    userinfoExistente.Email = createAppUserDeCero.Email;
+                    userinfoExistente.Name = createAppUserDeCero.Name;
+                    userinfoExistente.SSN = createAppUserDeCero.SSN;
+                    await context.SaveChangesAsync();
+                    return userinfoExistente;
+                }
             }
             catch (Exception ex)
             {
@@ -103,12 +150,13 @@ namespace DataRepository.Implementations
         public async Task<bool> EliminaUserinfo(string badgenumber)
         {
             var userinfo = await context.Usersinfo
-                .FirstAsync(u => u.Badgenumber == badgenumber);
+                .SingleOrDefaultAsync(u => u.Badgenumber == badgenumber);
             if (userinfo == null)
             {
                 logger.LogInformation($"Error al Eliminar. Usuario con código {badgenumber} no existe.");
                 return false;
             }
+            
             context.Usersinfo.Remove(userinfo);
             await context.SaveChangesAsync();
             return true;

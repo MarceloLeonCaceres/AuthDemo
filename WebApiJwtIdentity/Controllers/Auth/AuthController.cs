@@ -38,15 +38,39 @@ namespace ApiProperJwt3.Controllers.Auth
             return appUser;
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateAppUser(CreateAppUserDeCeroDto appUserDeCeroDto)
+        [HttpPost("Login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginDto user)
+        {
+            _logger.LogInformation("Login called.");
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var loginResult = await _authService.Login(user);
+            if (loginResult.IslogedIn)
+            {
+                _logger.LogInformation("Login suceeded");
+                return Ok(loginResult);
+            }
+            return Unauthorized("Usuario o password incorrectos");
+        }
+
+        [HttpPost("CreateAppAdmin")]
+        [Authorize(Roles = "th, admin")]
+        public async Task<IActionResult> CreateAppAdmin(CreateAppAdminDto appAdminDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var response = await _authService.CreateAppUser(appUserDeCeroDto);
-            if (response == null || response.Succeeded == false)
+            var response = await _authService.CreateAppAdmin(appAdminDto);
+            if (response == null)
+            {
+                return NotFound($"No se encontró el departamento indicado.");
+            }
+            if (response.Succeeded == false)
             {
                 return BadRequest($"No se pudo crear el usuario. {response.Errors.FirstOrDefault().Description} ");
             }
@@ -54,8 +78,30 @@ namespace ApiProperJwt3.Controllers.Auth
 
         }
 
+        [HttpPost("CreateAppUser")]
+        [Authorize(Roles = "th, admin")]
+        public async Task<IActionResult> CreateAppUser(CreateAppUserDeCeroDto appUserDeCeroDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var response = await _authService.CreateAppUser(appUserDeCeroDto);
+            if (response == null )
+            {
+                return BadRequest($"No se pudo crear el usuario.");
+            }
+            if(response.Succeeded == false)
+            {
+                return BadRequest($"No se pudo crear el usuario. {response.Errors.FirstOrDefault().Description}");
+            }
+            return Ok("Se creó el usuario con todos los roles!!");
+
+        }
+
         [HttpPost("UpdatePerfil/{badgenumber}")]
-        public async Task<IActionResult> ConvertToAppUser(string badgenumber, [FromBody] PerfilAppUserDto nuevoPerfil )
+        [Authorize(Roles = "th, admin")]
+        public async Task<IActionResult> ConvertToAppUser(string badgenumber, [FromBody] PerfilAppAdminDto nuevoPerfil )
         {
             if (!ModelState.IsValid)
             {
@@ -75,24 +121,6 @@ namespace ApiProperJwt3.Controllers.Auth
 
         }
 
-        [HttpPost("Login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginDto user)
-        {
-            _logger.LogInformation("Login called.");
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var loginResult = await _authService.Login(user);
-            if (loginResult.IslogedIn)
-            {
-                _logger.LogInformation("Login suceeded");
-                return Ok(loginResult);
-            }
-            return Unauthorized("Usuario o password incorrectos");
-        }
 
         [HttpGet("getAllAppUsers")]
         [AllowAnonymous]
@@ -130,8 +158,8 @@ namespace ApiProperJwt3.Controllers.Auth
             return Ok(result);
         }
 
-        [HttpDelete("DeleteUser")]
-        [AllowAnonymous]
+        [HttpDelete("DeleteAppUser")]
+        [Authorize(Roles = "th, admin")]
         public async Task<IActionResult> DeleteAppUser(string badgenumber)
         {
             var response = await _authService.DeleteAppUser(badgenumber);
@@ -146,8 +174,41 @@ namespace ApiProperJwt3.Controllers.Auth
             return Ok("El usuario fue eliminado exitosamente.");
         }
 
+        [HttpDelete("DeleteUserinfo")]
+        [Authorize(Roles = "th, admin")]
+        public async Task<IActionResult> DeleteUserinfo(string badgenumber)
+        {
+            //  Primero verifica que existan el Userinfo y el AppUser
+            bool existeUserinfo = await _userinfoRepo.ExisteUserinfo(badgenumber);
+            bool? existeAppUser = await _authService.ExisteAppUser(badgenumber);
+            if (existeUserinfo == false || existeAppUser == null || existeAppUser == false)
+            {
+                return NotFound("No se pudo eliminar el usuario por que no existe");
+            }            
+
+            // Luego, elimina el AppUser en primer lugar
+            var response = await _authService.DeleteAppUser(badgenumber);
+            if (response == null)
+            {
+                return NotFound("No se pudo eliminar el usuario(app) por que no existe");
+            }
+            if (!response.Succeeded)
+            {
+                return BadRequest($"Algo salió mal. {response.Errors.FirstOrDefault().Description}");
+            }
+
+            // Finalmente elimina el userinfo
+            var eliminaUserinfo = await _userinfoRepo.EliminaUserinfo(badgenumber);
+            if (eliminaUserinfo == false)
+            {
+                return BadRequest($"No se pudo eliminar el usuario(info) {badgenumber}");
+            }
+
+            return Ok("El usuario fue eliminado exitosamente.");
+        }
+
         [HttpPut("ChangePassword")]
-        [Authorize]
+        [Authorize(Roles="user")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDto changePassword)
         {
             var currentAppUser = await GetCurrentAppUser();
@@ -155,7 +216,7 @@ namespace ApiProperJwt3.Controllers.Auth
             {
                 return BadRequest($"Algo salió muy mal.");
             }
-            var response = await _authService.ChangePassword(currentAppUser.Badgenumber, changePassword);
+            var response = await _authService.ChangePassword(currentAppUser.UserName, changePassword);
             if (response == null)
             {
                 _logger.LogError("Error al querer cambiar el password");

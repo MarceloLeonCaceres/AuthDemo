@@ -10,6 +10,7 @@ namespace ApiProperJwt3.Controllers.Auth
     public class ClaimsController(IClaimRepo claimRepo, ILogger<ClaimsController> logger) : ControllerBase
     {
         [HttpGet("GetClaims")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllClaims(string username)
         {
             var userClaims = await claimRepo.GetAllClaims(username);
@@ -21,7 +22,7 @@ namespace ApiProperJwt3.Controllers.Auth
         }
 
         [HttpPost("AddClaimsToUser")]
-        [Authorize(Roles = "th")]
+        [Authorize(Roles = "th, admin")]
         public async Task<IActionResult> AddClaimsToUser(string badgenumber, string claimName, string claimValue)
         {
             var result = await claimRepo.AddClaimsToUser(badgenumber, claimName, claimValue);
@@ -38,7 +39,7 @@ namespace ApiProperJwt3.Controllers.Auth
         }
 
         [HttpDelete("RemoveClaimsFromUser")]
-        [Authorize(Roles = "th")]
+        [Authorize(Roles = "th, admin")]
         public async Task<IActionResult> RemoveClaimFromUser(string badgenumber, string claimName, string claimValue)
         {
             var result = await claimRepo.RemoveClaimFromUser(badgenumber, claimName, claimValue);

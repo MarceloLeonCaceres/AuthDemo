@@ -55,11 +55,10 @@ namespace ApiProperJwt3.StartupConfig
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "WebApi Jwt Identity de Foad Alavi",
-                    Description = "Tiene Models, Services, Migrations y Controllers. Usa Refresh Token y RevokeToken" +
-            "<br />Bdd = WebApiAuthentication" +
-            @"<br />Usuarios: user2@example.com,
-  ""password"": ""string12345_A"" y 
-el password es string12345_A. 
+                    Description = "Tiene Models, EF Data, Repository y ApiControllers. Usa Refresh Token y RevokeToken" +
+            "<br />Bdd = WebApiIdentityProper3" +
+            @"<br />Usuarios: Admin123@example.com,
+  ""password"": ""Passw0rd"". 
 <br />NO Hay que escribir ""Bearer """
                 });
             });
@@ -100,5 +99,6 @@ el password es string12345_A.
             });
 
         }
+
     }
 }

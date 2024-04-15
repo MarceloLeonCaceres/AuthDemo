@@ -2,12 +2,14 @@
 
 namespace Models.DTOs.AuthAppUser
 {
-    public class PerfilAppUserDto
+    public class PerfilAppAdminDto
     {
 
         [Required]
         [Range(0, 3, ErrorMessage = "Este código debe estar entre 0 y 3")]
         public int OtAdmin { get; set; }
+        [Required]
+        public int DeptId { get; set; }
 
         public bool RolTh { get; set; }
         public bool RolPlanificador { get; set; }
@@ -15,7 +17,6 @@ namespace Models.DTOs.AuthAppUser
         public bool RolSupervisorPermisos { get; set; }
         public bool RolVisorReportes { get; set; }
         public bool RolAdmin { get; set; }
-        public bool RolUser { get; set; }
 
     }
 }

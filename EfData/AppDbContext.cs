@@ -52,14 +52,15 @@ namespace EfData
                 .HasForeignKey(d => d.DepartmentId)
                 .IsRequired();
             });
-                
-
-            DataSeeding.Seed(modelBuilder);
-            
+                        
             modelBuilder.Entity<AppUser>(b =>
             {
                 // Primary key
                 b.HasKey( u => u.Id );
+
+                // Indexes for "normalized" username and email, to allow efficient lookups
+                b.HasIndex(u => u.NormalizedUserName).HasName("UserNameIndex").IsUnique();
+                // b.HasIndex(u => u.NormalizedEmail).HasName("EmailIndex");
 
                 // Maps to the AspNetUsers table
                 b.ToTable("AspNetUsers");
@@ -80,7 +81,7 @@ namespace EfData
                 // Note that these relationships are configured with no navigation properties
 
                 // Each User can have many UserClaims
-                // b.HasMany<UserClaim>().WithOne().HasForeignKey(uc => uc.UserId).IsRequired();
+                //b.HasMany<TUserClaim>().WithOne().HasForeignKey(uc => uc.UserId).IsRequired();
 
                 // Each User can have many UserLogins
                 // b.HasMany<TUserLogin>().WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
@@ -91,7 +92,6 @@ namespace EfData
                 // Each User can have many entries in the UserRole join table
                 b.HasMany(e => e.AppUserRoles).WithOne(e => e.AppUser).HasForeignKey(ur => ur.UserId).IsRequired();
             });
-
 
             modelBuilder.Entity<Role>(b =>
             {
@@ -120,6 +120,9 @@ namespace EfData
                 // Maps to the AspNetUserRoles table
                 b.ToTable("AspNetUserRoles");
             });
+
+            DataSeeding.Seed(modelBuilder);
+
 
         }
 

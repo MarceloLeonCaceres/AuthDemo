@@ -55,5 +55,15 @@ namespace ApiProperJwt3.Controllers
             return Ok(user);
         }
 
+        [HttpDelete("DeleteUserinfo")]
+        public async Task<IActionResult> DeleteUserinfo(string badgenumber)
+        {
+            bool result = await userinfoRepo.EliminaUserinfo(badgenumber);
+            if(result == false)
+            {
+                return NotFound("No se encontró este usuario.");
+            }
+            return Ok("El usuario fue eliminado exitosamente.");
+        }
     }
 }

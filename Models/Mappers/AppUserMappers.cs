@@ -9,10 +9,17 @@ namespace Models.Mappers
         {
             return new AppUser
             {
-                //Badgenumber = createAppUserDto.Badgenumber,
-                //OtAdmin = createAppUserDto.OtAdmin,
                 UserName = createAppUserDto.Badgenumber.ToString(),
                 Email = createAppUserDto.Email
+            };
+        }
+
+        public static AppUser ToAppUserFromAppAdmin(this CreateAppAdminDto createAppAdminDto)
+        {
+            return new AppUser
+            {
+                UserName = createAppAdminDto.UserName,
+                Email = createAppAdminDto.Email                
             };
         }
 
@@ -21,12 +28,10 @@ namespace Models.Mappers
         {
             return new AppUserViewDto
             {
-                Badgenumber = appUser.UserName,
-                //OtAdmin = appUser.,
-                //UserName = appUser.Badgenumber.ToString(),
+                UserName = appUser.UserName,         
                 Email = appUser.Email,
                 RefreshToken = appUser.RefreshToken,
-                RefreshTokenExpiry = appUser.RefreshTokenExpiry,
+                RefreshTokenExpiry = appUser.RefreshTokenExpiry is null ? (DateTime?)null : appUser.RefreshTokenExpiry.Value,
             };
         }
     }

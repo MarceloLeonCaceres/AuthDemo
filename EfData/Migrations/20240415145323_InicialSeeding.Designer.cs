@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EfData.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240409214908_IdentityAppUsers")]
-    partial class IdentityAppUsers
+    [Migration("20240415145323_InicialSeeding")]
+    partial class InicialSeeding
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,9 @@ namespace EfData.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
 
@@ -69,6 +72,8 @@ namespace EfData.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("UserId");
 
@@ -171,7 +176,7 @@ namespace EfData.Migrations
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("RefreshTokenExpiry")
+                    b.Property<DateTime?>("RefreshTokenExpiry")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("SecurityStamp")
@@ -199,6 +204,99 @@ namespace EfData.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "869f332e-a84d-4803-af9b-91b4c679ecb9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b1bc6c74-2005-4be8-bb24-aac5cc51a2bc",
+                            Email = "Admin123@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMIN123",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMf77A4JIm4HFLQOIyAbG4aNJIRDGAS1gALachUbpdQ6DVsYlbf2QyUEUKw5WPdN/Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "3052bcbc-df31-47ad-a8f3-b3f7c6056fca",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin123"
+                        },
+                        new
+                        {
+                            Id = "0d52f835-94e1-409e-b180-4f370f40f98d",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "a2a87aa3-271f-45c3-bdb9-40f155ad7dc8",
+                            Email = "aprueba1@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "APRUEBA1@EXAMPLE.COM",
+                            NormalizedUserName = "APRUEBA1",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8193067e-856f-41d0-b7a0-e604e6a45305",
+                            TwoFactorEnabled = false,
+                            UserName = "Aprueba1"
+                        },
+                        new
+                        {
+                            Id = "9bc4b3f3-e392-41da-aa6a-8c65f8556192",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "42d1fdd8-74d8-478b-be2b-6ddb5fa54be3",
+                            Email = "aprueba3@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "APRUEBA3@EXAMPLE.COM",
+                            NormalizedUserName = "APRUEBA3",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "34952211-75d3-4b06-81e7-8ff591f07970",
+                            TwoFactorEnabled = false,
+                            UserName = "Aprueba3"
+                        },
+                        new
+                        {
+                            Id = "2f81f8ad-5bcc-447a-bc33-7b30b87cefd7",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e3db25e0-560c-4abd-90bf-aaa76ce50481",
+                            Email = "planeador1@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "PLANEADOR1@EXAMPLE.COM",
+                            NormalizedUserName = "PLANEADOR1",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "194681a1-2fe4-4a30-b130-33d8c60915bd",
+                            TwoFactorEnabled = false,
+                            UserName = "Planeador1"
+                        },
+                        new
+                        {
+                            Id = "22472f44-f29e-4317-ac81-966e5c4a6035",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "25b17609-04e4-4953-9c79-24d807a7be74",
+                            Email = "thumano1@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "THUMANO1@EXAMPLE.COM",
+                            NormalizedUserName = "THUMANO1",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "c8978892-0e67-42ca-8b3f-aeea5e5e64d6",
+                            TwoFactorEnabled = false,
+                            UserName = "THumano1"
+                        },
+                        new
+                        {
+                            Id = "5eb32700-9d1f-48fb-9116-cf9647747ff7",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "308f9ff4-983b-4b64-944c-dde9755adea5",
+                            Email = "reporte1@example.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "REPORTE1@EXAMPLE.COM",
+                            NormalizedUserName = "REPORTE1",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "c8cb7f4f-a32a-4c94-90ff-0f2d5d9e97f0",
+                            TwoFactorEnabled = false,
+                            UserName = "Reporte1"
+                        });
                 });
 
             modelBuilder.Entity("Models.Entities.AuthAppUser.AppUserRole", b =>
@@ -214,6 +312,13 @@ namespace EfData.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "869f332e-a84d-4803-af9b-91b4c679ecb9",
+                            RoleId = "ab4cd34b-8232-4244-b459-cb150202c040"
+                        });
                 });
 
             modelBuilder.Entity("Models.Entities.AuthAppUser.Role", b =>
@@ -245,43 +350,43 @@ namespace EfData.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "70666012-3ae7-45a8-aea8-cff03b4565b2",
+                            Id = "ab4cd34b-8232-4244-b459-cb150202c040",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b5084ae1-7555-4ff3-8a25-cfb6636cb3fd",
+                            Id = "4899d69d-bfef-4a1b-972b-c66cc56b7a89",
                             Name = "planificador",
                             NormalizedName = "PLANIFICADOR"
                         },
                         new
                         {
-                            Id = "e9691d83-59a3-4067-8473-19dbb7b2d753",
+                            Id = "86e60536-b2ab-4ac5-85b8-e2afd8fe7058",
                             Name = "supervisorPermisos",
                             NormalizedName = "SUPERVISORPERMISOS"
                         },
                         new
                         {
-                            Id = "75cb970c-8e4f-4c89-a2ec-8d6d15071278",
+                            Id = "1b7d2e86-b210-4846-9530-16962a69af6d",
                             Name = "supervisorMR",
                             NormalizedName = "SUPERVISORMR"
                         },
                         new
                         {
-                            Id = "33f7d405-17ad-4afc-a68e-58e24ccabe38",
+                            Id = "c8c2a86c-7c38-45e5-95ac-b067a19aea4f",
                             Name = "th",
                             NormalizedName = "TH"
                         },
                         new
                         {
-                            Id = "ba519bad-b3c1-4791-b8da-30a4d34aa3a3",
+                            Id = "bf52d74f-adb0-4a8a-b8fa-bb0141ab9a29",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "4dda8e32-8034-4ac8-b680-30ecb8a4c3a6",
+                            Id = "017ba3c7-6860-48fe-a066-fe005ae54521",
                             Name = "visorReportes",
                             NormalizedName = "VISORREPORTES"
                         });
@@ -449,6 +554,10 @@ namespace EfData.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("Models.Entities.AuthAppUser.AppUser", null)
+                        .WithMany("AppUserClaims")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Models.Entities.AuthAppUser.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -511,6 +620,8 @@ namespace EfData.Migrations
 
             modelBuilder.Entity("Models.Entities.AuthAppUser.AppUser", b =>
                 {
+                    b.Navigation("AppUserClaims");
+
                     b.Navigation("AppUserRoles");
                 });
 

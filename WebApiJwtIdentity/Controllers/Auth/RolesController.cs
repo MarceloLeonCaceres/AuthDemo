@@ -14,6 +14,7 @@ namespace ApiProperJwt3.Controllers.Auth
     {
 
         [HttpPost("Create")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateRole(string name)
         {
             // Check if the role exist
@@ -36,6 +37,7 @@ namespace ApiProperJwt3.Controllers.Auth
 
 
         [HttpGet("GetRoles")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRoles()
         {
             var roles = await rolesRepo.GetRolesAsync();
@@ -48,10 +50,10 @@ namespace ApiProperJwt3.Controllers.Auth
         }
 
         [HttpGet("GetUserRoles")]
-        [Authorize(Roles ="th")]
-        public async Task<IActionResult> GetAppUserRoles(string badgenumber)
+        [Authorize(Roles ="th, admin")]
+        public async Task<IActionResult> GetAppUserRoles(string username)
         {
-            var appUsersRole = await rolesRepo.GetAppUserRoles(badgenumber);
+            var appUsersRole = await rolesRepo.GetAppUserRoles(username);
             if(appUsersRole == null)
             {
                 return NotFound("Usuario no encontrado.");
@@ -60,10 +62,10 @@ namespace ApiProperJwt3.Controllers.Auth
         }
 
         [HttpPost("AddUserToRole")]
-        [AllowAnonymous]
-        public async Task<IActionResult> AddUserToRole(string badgenumber, string roleName)
+        [Authorize(Roles = "th, admin")]
+        public async Task<IActionResult> AddUserToRole(string username, string roleName)
         {
-            var result = await rolesRepo.AddUserToRole(badgenumber, roleName);
+            var result = await rolesRepo.AddUserToRole(username, roleName);
             if (result == null)
             {
                 logger.LogWarning("Usuario o rol no existen.");
@@ -78,10 +80,10 @@ namespace ApiProperJwt3.Controllers.Auth
         }
 
         [HttpDelete("RemoveUserFromRole")]
-        [Authorize(Roles = "th")]
-        public async Task<IActionResult> RemoveUserFromRole(string badgenumber, string roleName)
+        [Authorize(Roles = "th, admin")]
+        public async Task<IActionResult> RemoveUserFromRole(string username, string roleName)
         {
-            var result = await rolesRepo.RemoveAppUserFromRole(badgenumber, roleName);
+            var result = await rolesRepo.RemoveAppUserFromRole(username, roleName);
             if(result == null)
             {
                 logger.LogWarning("Usuario o rol no existen.");
