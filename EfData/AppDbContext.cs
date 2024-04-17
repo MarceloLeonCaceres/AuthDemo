@@ -123,12 +123,10 @@ namespace EfData
 
             DataSeeding.Seed(modelBuilder);
 
-
         }
 
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<Userinfo> Usersinfo { get; set; }
-
 
     }
 }

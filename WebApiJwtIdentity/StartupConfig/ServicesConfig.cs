@@ -57,8 +57,8 @@ namespace ApiProperJwt3.StartupConfig
                     Title = "WebApi Jwt Identity de Foad Alavi",
                     Description = "Tiene Models, EF Data, Repository y ApiControllers. Usa Refresh Token y RevokeToken" +
             "<br />Bdd = WebApiIdentityProper3" +
-            @"<br />Usuarios: Admin123@example.com,
-  ""password"": ""Passw0rd"". 
+            @"<br />Usuarios: ""username"": ""Admin123"", ""password"": ""Passw0rd"" 
+<br/>Claims: OtAdmin, DeptId
 <br />NO Hay que escribir ""Bearer """
                 });
             });

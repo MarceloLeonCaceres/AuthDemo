@@ -4,6 +4,7 @@ using Models.DTOs.AuthAppUser;
 using Models.Entities;
 using Models.Entities.AuthAppUser;
 using Models.Entities.Enums;
+using System.Security.Claims;
 
 namespace EfData.Seeding
 {
@@ -28,7 +29,8 @@ namespace EfData.Seeding
             Department finanzas = new Department { Id = 2, DeptName = "Financiero", IdPadre = 1 };
             Department ventas = new Department { Id = 3, DeptName = "Ventas", IdPadre = 1 };
             Department th = new Department { Id = 4, DeptName = "Talento Humano", IdPadre = 1 };
-            modelBuilder.Entity<Department>().HasData(deptoRaiz, finanzas, ventas, th);
+            Department marketing = new Department { Id = 5, DeptName = "Marketing", IdPadre = 3 };
+            modelBuilder.Entity<Department>().HasData(deptoRaiz, finanzas, ventas, th, marketing);
 
             Userinfo gloria = new Userinfo { UserinfoId = 1, Badgenumber = "1", Name = "ACERO GLORIA", DepartmentId = deptoRaiz.Id, Email = "gacero@example.com" };
             Userinfo ruth = new Userinfo { UserinfoId = 2, Badgenumber = "2", Name = "BARCIA RUTH", DepartmentId = deptoRaiz.Id, Email = "rbarcia@example.com" };
@@ -36,7 +38,8 @@ namespace EfData.Seeding
             Userinfo daniel = new Userinfo { UserinfoId = 4, Badgenumber = "4", Name = "ZAPATA DANIEL", DepartmentId = deptoRaiz.Id, Email = "dzapata@example.com" };
             Userinfo jose = new Userinfo { UserinfoId = 5, Badgenumber = "55", Name = "JOSE VILLACIS", DepartmentId = finanzas.Id, Email = "jvillacis@example.com" };
             Userinfo paulina = new Userinfo { UserinfoId = 6, Badgenumber = "66", Name = "PAULINA GAONA", DepartmentId = th.Id, Email = "pgaona@example.com" };
-            modelBuilder.Entity<Userinfo>().HasData(gloria, ruth, eddy, daniel, jose, paulina);
+            Userinfo fornell = new Userinfo { UserinfoId = 7, Badgenumber = "77", Name = "JL FORNELL", DepartmentId = marketing.Id, Email = "jlfornell@example.com" };
+            modelBuilder.Entity<Userinfo>().HasData(gloria, ruth, eddy, daniel, jose, paulina, fornell);
 
 
             string password = "Passw0rd";
@@ -101,6 +104,17 @@ namespace EfData.Seeding
 
             var hashed = appPassword.HashPassword(adminAppUser, password);
             adminAppUser.PasswordHash = hashed;
+            hashed = appPassword.HashPassword(Aprueba1AppUser, password);
+            Aprueba1AppUser.PasswordHash = hashed; 
+            hashed = appPassword.HashPassword(Aprueba3AppUser, password);
+            Aprueba3AppUser.PasswordHash = hashed; 
+            hashed = appPassword.HashPassword(Planeador1AppUser, password);
+            Planeador1AppUser.PasswordHash = hashed; 
+            hashed = appPassword.HashPassword(THumano1AppUser, password);
+            THumano1AppUser.PasswordHash = hashed; 
+            hashed = appPassword.HashPassword(Reporte1AppUser, password);
+            Reporte1AppUser.PasswordHash = hashed; 
+            
             modelBuilder.Entity<AppUser>().HasData(adminAppUser, Aprueba1AppUser, Aprueba3AppUser, Planeador1AppUser, THumano1AppUser, Reporte1AppUser);
 
             AppUserRole adminUser_admin = new AppUserRole
@@ -136,6 +150,35 @@ namespace EfData.Seeding
 
             modelBuilder.Entity<AppUserRole>().HasData(adminUser_admin, aprobador1, aprobador3, planeador, thumano, reporteador);
 
+            //Claim claimSA = new Claim("OtAdmin", "3");    // Super Administrador
+            //Claim claimADepto = new Claim("OtAdmin", "2");    // Administrador de Departamento
+            //Claim claimALocal = new Claim("OtAdmin", "1");    // Administrador Local
+            //Claim claimDeptoRaiz = new Claim("DeptId", "1");      //Department 1 = Empresa
+            //Claim claimDeptoFinanciero = new Claim("DeptId", "2");      //Department 2 = Finanzas
+            //Claim claimDeptoVentas = new Claim("DeptId", "3");      //Department 3 = Ventas
+            //Claim claimDeptoTH = new Claim("DeptId", "4");      //Department 4 = Talento Humano
+
+            //AppUserClaim claimsAdmin = new AppUserClaim(adminAppUser, claimSA);
+            AppUserClaim appUserClaim = new AppUserClaim
+            {
+                Id = -1,
+                UserId = adminAppUser.Id,
+                ClaimType = "OtAdmin",
+                ClaimValue = "1",
+                AppUser = adminAppUser
+            };
+
+            //modelBuilder.Entity<AppUserClaim>().HasData(
+            //    //new AppUserClaim(1, adminAppUser.Id, "OtAdmin", "3"),
+            //    //new AppUserClaim(2, adminAppUser.Id, "DeptId", "1"),
+            //    //new AppUserClaim(3, Planeador1AppUser.Id, "DeptId", "3"),
+            //    //new AppUserClaim(4, Planeador1AppUser.Id, "OtAdmin", "2"),
+            //    //new AppUserClaim(5, THumano1AppUser.Id, "OtAdmin", "3"),
+            //    //new AppUserClaim(6, THumano1AppUser.Id, "DeptId", "4"),
+            //    //new AppUserClaim(7, Reporte1AppUser.Id, "DeptId", "2"),
+            //    //new AppUserClaim(7, Reporte1AppUser.Id, "OtAdmin", "1")
+            //    appUserClaim
+            //);
         }                    
 
     }

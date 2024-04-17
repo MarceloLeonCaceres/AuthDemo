@@ -19,6 +19,56 @@ namespace DataRepository.Implementations
         {
             return await context.Departments.SingleOrDefaultAsync(d => d.Id == id);
         }
+
+//        public async Task<List<int>> GetSubDepartments(int deptId)
+//        {
+//            var listaDeptos = await context.Departments.FromSqlInterpolated(@$"WITH SubDepartamentos (Id, deptName, idPadre)
+//AS    (
+//SELECT Id, deptName, 0 FROM departments WHERE Id = {deptId} 
+//UNION ALL                
+//SELECT D.Id, D.deptName, D.idPadre FROM departments D inner join SubDepartamentos Sub on Sub.Id = D.idPadre 
+//)
+//Select  Id From SubDepartamentos");
+//            List<int> list = new List<int>();
+//            foreach(var item in listaDeptos)
+//            {
+//                list.Add(int.Parse(item.Id));
+//            }
+//            return list;
+//        }
+        public async Task<DepartmentWithUsers?> GetDepartmentWithUsers(int deptId)
+        {
+            bool existeDepto = await context.Departments.AnyAsync(d => d.Id == deptId);
+            if(existeDepto == false)
+            {
+                return null;
+            }
+
+            var deptos = await context.Departments.Include(d => d.Userinfos).Where(d => d.Id == deptId)
+                .Select(d => new DepartmentWithUsers
+            {
+                DeptName = d.DeptName,
+                UsersNames = d.Userinfos.Select(u => u.Name).ToList(),
+            }).AsNoTracking().ToListAsync();
+
+            return deptos[0];
+
+            //return await context.Departments.SingleOrDefault(d => d.Id == deptId).Include(d => d.Userinfos)
+            //    .Select(d => new DepartmentWithUsers
+            //    {
+            //        DeptName = d.DeptName,
+            //        UsersNames  = d.Userinfos.Select(u => u.Name).ToList(),
+            //    }).AsNoTracking().ToListAsync();
+        }
+        public async Task<List<DepartmentWithUsers>?> GetDepartmentsWithUsers()
+        {
+            return await context.Departments.Include(d => d.Userinfos)
+                .Select(d => new DepartmentWithUsers
+                {
+                    DeptName = d.DeptName,
+                    UsersNames = d.Userinfos.Select(u => u.Name).ToList(),
+                }).AsNoTracking().ToListAsync();
+        }
         public async Task<Department?> CreateDepartment(DeptoCreateDto deptoDto)
         {
             bool existePadre = await context.Departments.AnyAsync(d => d.Id == deptoDto.IdPadre);

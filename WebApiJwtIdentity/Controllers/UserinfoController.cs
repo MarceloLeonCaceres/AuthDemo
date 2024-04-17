@@ -1,8 +1,10 @@
 ﻿using DataRepository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models.DTOs;
 using Models.Entities;
+using System.Security.Claims;
 
 namespace ApiProperJwt3.Controllers
 {
@@ -12,6 +14,7 @@ namespace ApiProperJwt3.Controllers
     {
 
         [HttpGet("GetUsersInfo")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetUsersInfo()
         {
             var usersinfo = await userinfoRepo.GetUsersinfoAsync();
@@ -42,6 +45,21 @@ namespace ApiProperJwt3.Controllers
                 return NotFound("No hay usuarios en este departamento");
             }
             return Ok(usersinfo);
+        }
+
+        [HttpGet("GetUsersInfoByProfile")]
+        [Authorize]
+        public async Task<IActionResult> GetUsersInfoByProfile()
+        {   
+            var username = User.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
+            var otadmin = User.Claims.FirstOrDefault(c => c.Type == "OtAdmin")?.Value;
+            var deptId = User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value;
+            var respuesta = await userinfoRepo.GetUsersinfoSeleccionables(int.Parse(deptId), int.Parse(otadmin));
+            if (otadmin is null || deptId is null)
+            {   
+                return NotFound("Algo salió mal");
+            }
+            return Ok(username);
         }
 
         [HttpPost("CreateUserinfo")]

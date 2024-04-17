@@ -9,6 +9,8 @@ namespace DataRepository.Interfaces
         Task<UserinfoDto?> GetUserinfoByUserIdAsync(int userid);
         Task<List<UserinfoDto>?> GetUsersinfoAsync();
         Task<List<Userinfo>> GetUsersinfoByDeptAsync(int deptId);
+        //Task<List<SelectUserDeptoDto>?> GetUsersinfoSeleccionables(int deptId, int otAdmin);
+        Task<List<Userinfo>?> GetUsersinfoSeleccionables(int deptId, int otAdmin);
         Task<Userinfo?> CreateUserinfoAsync(UserinfoCreateFromBiometricoDto createUserinfo);
         Task<Userinfo?> UpdateUserinfoAsync(Userinfo userinfo); 
         Task<bool> EliminaUserinfo(string badgenumber);

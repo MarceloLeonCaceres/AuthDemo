@@ -38,6 +38,17 @@ namespace DataRepository.Implementations.AuthAppUser
                 return null;
             }
 
+            // Revisa si ya tiene el claim con otro valor
+            var userClaims = await userManager.GetClaimsAsync(user);
+            foreach(Claim claim in userClaims)
+            {
+                if(claim.Type.ToLower() == claimName.ToLower())
+                {
+                    logger.LogWarning($"El usuario {badgenumber} ya tiene ese claim {claimName}");
+                    return null;
+                }
+            }
+
             //Crea el claim
             var userClaim = new Claim(claimName, claimValue);
 

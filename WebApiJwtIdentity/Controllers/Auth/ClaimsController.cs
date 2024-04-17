@@ -28,7 +28,7 @@ namespace ApiProperJwt3.Controllers.Auth
             var result = await claimRepo.AddClaimsToUser(badgenumber, claimName, claimValue);
             if(result == null)
             {
-                return BadRequest(new { error = "Usuario no existe" });
+                return BadRequest(new { error = "Usuario no existe o el usuario ya tiene ese claim." });
             }
             else if(result.Succeeded == false)
             {

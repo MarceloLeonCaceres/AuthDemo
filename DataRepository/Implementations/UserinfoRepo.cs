@@ -2,6 +2,7 @@
 using EfData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using Models.DTOs;
 using Models.DTOs.AuthAppUser;
 using Models.Entities;
@@ -68,6 +69,39 @@ namespace DataRepository.Implementations
                 .AsNoTracking()
                 .ToListAsync();
             return userinfos;
+        }
+
+        //public async Task<List<SelectUserDeptoDto>?> GetUsersinfoSeleccionables(int deptId, int otAdmin)
+        public async Task<List<Userinfo>?> GetUsersinfoSeleccionables(int deptId, int otAdmin)
+        {
+            List<Userinfo>? userinfos;
+            if(otAdmin == 1)
+            {
+                userinfos = await context.Usersinfo
+                .Include(u => u.Department)
+                .Where(u => u.DepartmentId == deptId)
+                .AsNoTracking()
+                .ToListAsync();
+                //return userinfos;
+            }
+            else if (otAdmin == 3)
+            {
+                userinfos = await context.Usersinfo
+                .Include(u => u.Department)
+                .Where(u => u.DepartmentId > 0)
+                .AsNoTracking()
+                .ToListAsync();
+                //return userinfos;
+            }
+            else
+            {
+                var listaDeptos = await context.Departments.FromSqlInterpolated(@$"EXEC [SubDepartamentos] {deptId}")
+                    .IgnoreQueryFilters().ToListAsync();
+                List<int> list = listaDeptos.Select(d => d.Id).ToList();
+                userinfos = await context.Usersinfo
+                    .Where(u => list.Contains(u.DepartmentId)).ToListAsync());
+            }
+            return null;
         }
 
         public async Task<Userinfo?> CreateUserinfoAsync(UserinfoCreateFromBiometricoDto createUserinfo)

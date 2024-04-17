@@ -207,15 +207,15 @@ namespace EfData.Migrations
                         {
                             Id = "869f332e-a84d-4803-af9b-91b4c679ecb9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c3c82622-e72e-4e78-a6bc-6e90111e1392",
+                            ConcurrencyStamp = "810a668e-ba83-4cda-8ae5-fd7e543ca22b",
                             Email = "Admin123@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN123",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHCR2PZTLfYMpOvd6abCqctqajcwpbnHDdxDOkl+EkMoM8IS5grbcIKulAH2/KJV7w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENX4If80rSGMYZUI5gOcOTr2dnG5EKhkiUlpGHwngpMEthC4RoVwv+yidMs33oU9uw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6f42c549-c76a-4f52-abf6-63ab9eb3bb9e",
+                            SecurityStamp = "6ff662ac-2f01-43d5-bdde-c9ad2ba19827",
                             TwoFactorEnabled = false,
                             UserName = "Admin123"
                         },
@@ -223,14 +223,15 @@ namespace EfData.Migrations
                         {
                             Id = "0d52f835-94e1-409e-b180-4f370f40f98d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9695edba-cc0c-4727-956d-54ac476e3f45",
+                            ConcurrencyStamp = "7052f5a1-6b6c-4158-bb35-308abc4fe714",
                             Email = "aprueba1@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "APRUEBA1@EXAMPLE.COM",
                             NormalizedUserName = "APRUEBA1",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMrh4S9M/VqxsLcdW91FOYDmaOH7MJTLyFrVmf8ep8bNzhtRPVNcHjgPQEpH0y5kCw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "74a0db77-a5df-4552-b07c-dceba3b4d443",
+                            SecurityStamp = "b48cb3b6-cb8b-4e6b-abb3-e4ecd85fec2f",
                             TwoFactorEnabled = false,
                             UserName = "Aprueba1"
                         },
@@ -238,14 +239,15 @@ namespace EfData.Migrations
                         {
                             Id = "9bc4b3f3-e392-41da-aa6a-8c65f8556192",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7a00c19f-0b75-43db-a418-1b87df6e7463",
+                            ConcurrencyStamp = "599e2df0-f5aa-445c-964c-32abd2e7645c",
                             Email = "aprueba3@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "APRUEBA3@EXAMPLE.COM",
                             NormalizedUserName = "APRUEBA3",
+                            PasswordHash = "AQAAAAIAAYagAAAAEO4y2ppfT55dOLxESBBV6PZYojxsA5n/z7QSgUU83DvdMzBh9wCwSBt5RXeihP38uQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5b285f68-2a12-4f24-a323-820536a48836",
+                            SecurityStamp = "9b1c7d0a-4db5-493b-8d9e-aa0c95f5f6e6",
                             TwoFactorEnabled = false,
                             UserName = "Aprueba3"
                         },
@@ -253,14 +255,15 @@ namespace EfData.Migrations
                         {
                             Id = "2f81f8ad-5bcc-447a-bc33-7b30b87cefd7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "76e02681-c391-4d2d-a0aa-29f9bc9c3b40",
+                            ConcurrencyStamp = "83dac0f3-e054-4cbb-add0-8eb07e1010ac",
                             Email = "planeador1@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "PLANEADOR1@EXAMPLE.COM",
                             NormalizedUserName = "PLANEADOR1",
+                            PasswordHash = "AQAAAAIAAYagAAAAEP8wpnddFNcaJEXoNLgtv7V1hZWr412wF3HsWnBcKqXPkYh6C8QTOw6NEvGf0cZvfA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5d416c9f-76ea-4ad9-9e6c-fd8cb351757a",
+                            SecurityStamp = "6aa43204-20cd-413a-bb72-259e98388e07",
                             TwoFactorEnabled = false,
                             UserName = "Planeador1"
                         },
@@ -268,14 +271,15 @@ namespace EfData.Migrations
                         {
                             Id = "22472f44-f29e-4317-ac81-966e5c4a6035",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "abeeda83-e2b3-47b4-ad68-d9e833f533c8",
+                            ConcurrencyStamp = "8e4a1790-423a-4ade-8ddc-79d2bf5f3878",
                             Email = "thumano1@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "THUMANO1@EXAMPLE.COM",
                             NormalizedUserName = "THUMANO1",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAU6LvxbpTQn8MrnMGHT3kVxDMpMvDDgjmnB6uQ5W2y9SEBBIjSh5bGFsqwFWcVukA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "57f5c02f-2b06-4e95-bdbf-e451b879c692",
+                            SecurityStamp = "e2bee33a-cbcb-4150-93ae-731a5cde0396",
                             TwoFactorEnabled = false,
                             UserName = "THumano1"
                         },
@@ -283,14 +287,15 @@ namespace EfData.Migrations
                         {
                             Id = "5eb32700-9d1f-48fb-9116-cf9647747ff7",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8ae8da8b-9776-425d-8746-09249362e4a6",
+                            ConcurrencyStamp = "92eea465-2ee5-4118-bb6a-916a5edf5b90",
                             Email = "reporte1@example.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "REPORTE1@EXAMPLE.COM",
                             NormalizedUserName = "REPORTE1",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH4nZjzlOCShWaoc0WfrBxtnk6Zkv4qQ/yDTgmqSai8RSm6vO79fK4CG8dydEbq4EQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "56aa9c7d-3988-4104-978c-cd9be8b1451e",
+                            SecurityStamp = "4e984034-7b01-4b44-8bd2-0c967f5013eb",
                             TwoFactorEnabled = false,
                             UserName = "Reporte1"
                         });
@@ -458,6 +463,12 @@ namespace EfData.Migrations
                             Id = 4,
                             DeptName = "Talento Humano",
                             IdPadre = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            DeptName = "Marketing",
+                            IdPadre = 3
                         });
                 });
 
@@ -561,6 +572,14 @@ namespace EfData.Migrations
                             DepartmentId = 4,
                             Email = "pgaona@example.com",
                             Name = "PAULINA GAONA"
+                        },
+                        new
+                        {
+                            UserinfoId = 7,
+                            Badgenumber = "77",
+                            DepartmentId = 5,
+                            Email = "jlfornell@example.com",
+                            Name = "JL FORNELL"
                         });
                 });
 
