@@ -8,12 +8,12 @@ using Models.Entities.AuthAppUser;
 
 namespace DataRepository.Implementations.AuthAppUser
 {
-    public class RolesRepo(UserManager<AppUser> userManager,
+    public class RolesRepo(UserManager<ApplicationUser> userManager,
             RoleManager<Role> roleManager,
             ILogger<RolesRepo> logger,
             IConfiguration config) : IRolesRepo
     {
-        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly RoleManager<Role> _roleManager = roleManager;
         private readonly ILogger<RolesRepo> _logger = logger;
         private readonly IConfiguration _config = config;
@@ -25,7 +25,7 @@ namespace DataRepository.Implementations.AuthAppUser
             return roleResult;
         }
 
-        public async Task<List<AppUser>> GetAllAppUsers()
+        public async Task<List<ApplicationUser>> GetAllAppUsers()
         {
             var appUsers = await _userManager.Users.ToListAsync();
             return appUsers;

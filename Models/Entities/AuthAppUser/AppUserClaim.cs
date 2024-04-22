@@ -5,7 +5,7 @@ namespace Models.Entities.AuthAppUser
 {
     public class AppUserClaim : IdentityUserClaim<string>
     {
-        public virtual AppUser AppUser { get; set; }
+        public virtual ApplicationUser AppUser { get; set; }
 
         public AppUserClaim(string userId, string claimType, string claimValue)
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Models.DTOs.AuthAppUser;
 using Models.Entities;
 using Models.Entities.AuthAppUser;
@@ -32,20 +33,20 @@ namespace EfData.Seeding
             Department marketing = new Department { Id = 5, DeptName = "Marketing", IdPadre = 3 };
             modelBuilder.Entity<Department>().HasData(deptoRaiz, finanzas, ventas, th, marketing);
 
-            Userinfo gloria = new Userinfo { UserinfoId = 1, Badgenumber = "1", Name = "ACERO GLORIA", DepartmentId = deptoRaiz.Id, Email = "gacero@example.com" };
-            Userinfo ruth = new Userinfo { UserinfoId = 2, Badgenumber = "2", Name = "BARCIA RUTH", DepartmentId = deptoRaiz.Id, Email = "rbarcia@example.com" };
-            Userinfo eddy = new Userinfo { UserinfoId = 3, Badgenumber = "3", Name = "LOPEZ EDDY", DepartmentId = deptoRaiz.Id, Email = "elopez@example.com" };
-            Userinfo daniel = new Userinfo { UserinfoId = 4, Badgenumber = "4", Name = "ZAPATA DANIEL", DepartmentId = deptoRaiz.Id, Email = "dzapata@example.com" };
-            Userinfo jose = new Userinfo { UserinfoId = 5, Badgenumber = "55", Name = "JOSE VILLACIS", DepartmentId = finanzas.Id, Email = "jvillacis@example.com" };
-            Userinfo paulina = new Userinfo { UserinfoId = 6, Badgenumber = "66", Name = "PAULINA GAONA", DepartmentId = th.Id, Email = "pgaona@example.com" };
-            Userinfo fornell = new Userinfo { UserinfoId = 7, Badgenumber = "77", Name = "JL FORNELL", DepartmentId = marketing.Id, Email = "jlfornell@example.com" };
+            Userinfo gloria = new Userinfo { UserinfoId = 1, Badgenumber = "1", Name = "ACERO GLORIA", SSN = "1234567890", DepartmentId = deptoRaiz.Id, Email = "gacero@example.com" };
+            Userinfo ruth = new Userinfo { UserinfoId = 2, Badgenumber = "2", Name = "BARCIA RUTH", SSN = "1234567891", DepartmentId = deptoRaiz.Id, Email = "rbarcia@example.com" };
+            Userinfo eddy = new Userinfo { UserinfoId = 3, Badgenumber = "3", Name = "LOPEZ EDDY", SSN = "1234567892", DepartmentId = deptoRaiz.Id, Email = "elopez@example.com" };
+            Userinfo daniel = new Userinfo { UserinfoId = 4, Badgenumber = "4", Name = "ZAPATA DANIEL", SSN = "1234567893", DepartmentId = deptoRaiz.Id, Email = "dzapata@example.com" };
+            Userinfo jose = new Userinfo { UserinfoId = 5, Badgenumber = "55", Name = "JOSE VILLACIS", SSN = "1234567894", DepartmentId = finanzas.Id, Email = "jvillacis@example.com" };
+            Userinfo paulina = new Userinfo { UserinfoId = 6, Badgenumber = "66", Name = "PAULINA GAONA", SSN = "1234567895", DepartmentId = th.Id, Email = "pgaona@example.com" };
+            Userinfo fornell = new Userinfo { UserinfoId = 7, Badgenumber = "77", Name = "JL FORNELL", SSN = "1234567896", DepartmentId = marketing.Id, Email = "jlfornell@example.com" };
             modelBuilder.Entity<Userinfo>().HasData(gloria, ruth, eddy, daniel, jose, paulina, fornell);
 
 
             string password = "Passw0rd";
-            var appPassword = new PasswordHasher<AppUser>();
+            var appPassword = new PasswordHasher<ApplicationUser>();
             
-            AppUser adminAppUser = new AppUser
+            ApplicationUser adminAppUser = new ApplicationUser
             {
                 UserName = "Admin123",
                 Id = "869f332e-a84d-4803-af9b-91b4c679ecb9",
@@ -53,7 +54,7 @@ namespace EfData.Seeding
                 Email = "Admin123@example.com",
                 NormalizedEmail = "ADMIN@EXAMPLE.COM"
             };
-            AppUser AppUser = new AppUser
+            ApplicationUser AppUser = new ApplicationUser
             {
                 UserName = "",
                 Id = "",
@@ -61,7 +62,7 @@ namespace EfData.Seeding
                 Email = "@example.com",
                 NormalizedEmail = "@EXAMPLE.COM"
             };
-            AppUser Aprueba1AppUser = new AppUser
+            ApplicationUser Aprueba1AppUser = new ApplicationUser
             {
                 UserName = "Aprueba1",
                 Id = "0d52f835-94e1-409e-b180-4f370f40f98d",
@@ -69,7 +70,7 @@ namespace EfData.Seeding
                 Email = "aprueba1@example.com",
                 NormalizedEmail = "APRUEBA1@EXAMPLE.COM"
             };
-            AppUser Aprueba3AppUser = new AppUser
+            ApplicationUser Aprueba3AppUser = new ApplicationUser
             {
                 UserName = "Aprueba3",
                 Id = "9bc4b3f3-e392-41da-aa6a-8c65f8556192",
@@ -77,7 +78,7 @@ namespace EfData.Seeding
                 Email = "aprueba3@example.com",
                 NormalizedEmail = "APRUEBA3@EXAMPLE.COM"
             };
-            AppUser Planeador1AppUser = new AppUser
+            ApplicationUser Planeador1AppUser = new ApplicationUser
             {
                 UserName = "Planeador1",
                 Id = "2f81f8ad-5bcc-447a-bc33-7b30b87cefd7",
@@ -85,7 +86,7 @@ namespace EfData.Seeding
                 Email = "planeador1@example.com",
                 NormalizedEmail = "PLANEADOR1@EXAMPLE.COM"
             };
-            AppUser THumano1AppUser = new AppUser
+            ApplicationUser THumano1AppUser = new ApplicationUser
             {
                 UserName = "THumano1",
                 Id = "22472f44-f29e-4317-ac81-966e5c4a6035",
@@ -93,7 +94,7 @@ namespace EfData.Seeding
                 Email = "thumano1@example.com",
                 NormalizedEmail = "THUMANO1@EXAMPLE.COM"
             };
-            AppUser Reporte1AppUser = new AppUser
+            ApplicationUser Reporte1AppUser = new ApplicationUser
             {
                 UserName = "Reporte1",
                 Id = "5eb32700-9d1f-48fb-9116-cf9647747ff7",
@@ -115,7 +116,7 @@ namespace EfData.Seeding
             hashed = appPassword.HashPassword(Reporte1AppUser, password);
             Reporte1AppUser.PasswordHash = hashed; 
             
-            modelBuilder.Entity<AppUser>().HasData(adminAppUser, Aprueba1AppUser, Aprueba3AppUser, Planeador1AppUser, THumano1AppUser, Reporte1AppUser);
+            modelBuilder.Entity<ApplicationUser>().HasData(adminAppUser, Aprueba1AppUser, Aprueba3AppUser, Planeador1AppUser, THumano1AppUser, Reporte1AppUser);
 
             AppUserRole adminUser_admin = new AppUserRole
             {
@@ -158,28 +159,55 @@ namespace EfData.Seeding
             //Claim claimDeptoVentas = new Claim("DeptId", "3");      //Department 3 = Ventas
             //Claim claimDeptoTH = new Claim("DeptId", "4");      //Department 4 = Talento Humano
 
-            //AppUserClaim claimsAdmin = new AppUserClaim(adminAppUser, claimSA);
-            AppUserClaim appUserClaim = new AppUserClaim
-            {
-                Id = -1,
-                UserId = adminAppUser.Id,
-                ClaimType = "OtAdmin",
-                ClaimValue = "1",
-                AppUser = adminAppUser
-            };
+            //// AppUserClaim claimsAdmin = new AppUserClaim(adminAppUser, claimSA);
+            //AppUserClaim appUserClaim = new AppUserClaim
+            //{
+            //    Id = -1,
+            //    UserId = adminAppUser.Id,
+            //    ClaimType = "OtAdmin",
+            //    ClaimValue = "1",
+            //    ApplicationUser = adminAppUser
+            //};
 
             //modelBuilder.Entity<AppUserClaim>().HasData(
-            //    //new AppUserClaim(1, adminAppUser.Id, "OtAdmin", "3"),
-            //    //new AppUserClaim(2, adminAppUser.Id, "DeptId", "1"),
-            //    //new AppUserClaim(3, Planeador1AppUser.Id, "DeptId", "3"),
-            //    //new AppUserClaim(4, Planeador1AppUser.Id, "OtAdmin", "2"),
-            //    //new AppUserClaim(5, THumano1AppUser.Id, "OtAdmin", "3"),
-            //    //new AppUserClaim(6, THumano1AppUser.Id, "DeptId", "4"),
-            //    //new AppUserClaim(7, Reporte1AppUser.Id, "DeptId", "2"),
-            //    //new AppUserClaim(7, Reporte1AppUser.Id, "OtAdmin", "1")
+            //    new AppUserClaim(1, adminAppUser.Id, "OtAdmin", "3"),
+            //    new AppUserClaim(2, adminAppUser.Id, "DeptId", "1"),
+            //    new AppUserClaim(3, Planeador1AppUser.Id, "DeptId", "3"),
+            //    new AppUserClaim(4, Planeador1AppUser.Id, "OtAdmin", "2"),
+            //    new AppUserClaim(5, THumano1AppUser.Id, "OtAdmin", "3"),
+            //    new AppUserClaim(6, THumano1AppUser.Id, "DeptId", "4"),
+            //    new AppUserClaim(7, Reporte1AppUser.Id, "DeptId", "2"),
+            //    new AppUserClaim(7, Reporte1AppUser.Id, "OtAdmin", "1"),
             //    appUserClaim
             //);
         }                    
 
     }
 }
+
+// Up
+
+//migrationBuilder.Sql(@"CREATE PROCEDURE [dbo].[SubDepartamentos]
+//	                                    -- Add the parameters for the stored procedure here
+//	                                    @id int 
+//                                    AS
+//                                    BEGIN
+//	                                    -- SET NOCOUNT ON added to prevent extra result sets from
+//	                                    -- interfering with SELECT statements.
+//	                                    SET NOCOUNT ON;
+
+//                                        -- Insert statements for procedure here
+//	                                    WITH SubDepartamentos (Id, deptName, idPadre)
+//                                    AS    (
+//                                    SELECT Id, deptName, 0 FROM departments WHERE Id = 1
+//                                    UNION ALL                
+//                                    SELECT D.Id, D.deptName, D.idPadre FROM departments D inner join SubDepartamentos Sub on Sub.Id = D.idPadre 
+//                                    )
+//                                    Select Id, deptName, idPadre from SubDepartamentos
+//                                    END");
+
+
+// Down
+
+
+// migrationBuilder.Sql(@"DROP PROCEDURE [dbo].[SubDepartamentos]");

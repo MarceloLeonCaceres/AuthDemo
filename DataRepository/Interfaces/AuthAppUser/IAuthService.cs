@@ -14,6 +14,7 @@ namespace DataRepository.Interfaces.AuthAppUser
         Task<IdentityResult?> CreateAppUser(CreateAppUserDeCeroDto createAppUserDeCero);
         Task<IdentityResult?> UpdatePerfilAppUser(string username, PerfilAppAdminDto convertToUserDto);
         Task<IdentityResult?> DeleteAppUser(string username);
+        Task<IdentityResult?> CreateAppUsersFromExistingUserinfos(List<CreateAppUserDeUserinfoDto> userinfos);
         Task<bool?> ExisteAppUser(string username);
         Task<TokenResponse> Login(LoginDto user);
         Task<IdentityResult?> ChangePassword(string username, ChangePasswordDto changePwdDto);

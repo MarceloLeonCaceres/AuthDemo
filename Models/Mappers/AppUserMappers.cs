@@ -5,18 +5,27 @@ namespace Models.Mappers
 {
     public static class AppUserMappers
     {
-        public static AppUser ToAppUserFromCreate(this CreateAppUserDeCeroDto createAppUserDto)
+        public static ApplicationUser ToAppUserFromCreate(this CreateAppUserDeCeroDto createAppUserDto)
         {
-            return new AppUser
+            return new ApplicationUser
             {
                 UserName = createAppUserDto.Badgenumber.ToString(),
                 Email = createAppUserDto.Email
             };
         }
-
-        public static AppUser ToAppUserFromAppAdmin(this CreateAppAdminDto createAppAdminDto)
+        public static ApplicationUser ToAppUserFromCreateDeUserinfo(this CreateAppUserDeUserinfoDto createAppUserDto)
         {
-            return new AppUser
+            return new ApplicationUser
+            {
+                UserinfoId = createAppUserDto.UserinfoId,
+                UserName = createAppUserDto.Badgenumber.ToString(),
+                Email = createAppUserDto.Email,
+            };
+        }
+
+        public static ApplicationUser ToAppUserFromAppAdmin(this CreateAppAdminDto createAppAdminDto)
+        {
+            return new ApplicationUser
             {
                 UserName = createAppAdminDto.UserName,
                 Email = createAppAdminDto.Email                
@@ -24,7 +33,7 @@ namespace Models.Mappers
         }
 
 
-        public static AppUserViewDto ToAppUserViewDto(this AppUser appUser)
+        public static AppUserViewDto ToAppUserViewDto(this ApplicationUser appUser)
         {
             return new AppUserViewDto
             {

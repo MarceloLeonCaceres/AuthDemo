@@ -1,5 +1,6 @@
 ﻿using DataRepository.Interfaces;
 using EfData;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Models.DTOs;
@@ -7,7 +8,8 @@ using Models.Entities;
 
 namespace DataRepository.Implementations
 {
-    public class DepartmentRepo(AppDbContext context, ILogger<DepartmentRepo> logger) : IDepartmentRepo
+    public class DepartmentRepo(AppDbContext context, 
+        ILogger<DepartmentRepo> logger ) : IDepartmentRepo
     {
 
         public async Task<List<Department>?> GetDepartments()
@@ -20,23 +22,67 @@ namespace DataRepository.Implementations
             return await context.Departments.SingleOrDefaultAsync(d => d.Id == id);
         }
 
-//        public async Task<List<int>> GetSubDepartments(int deptId)
-//        {
-//            var listaDeptos = await context.Departments.FromSqlInterpolated(@$"WITH SubDepartamentos (Id, deptName, idPadre)
-//AS    (
-//SELECT Id, deptName, 0 FROM departments WHERE Id = {deptId} 
-//UNION ALL                
-//SELECT D.Id, D.deptName, D.idPadre FROM departments D inner join SubDepartamentos Sub on Sub.Id = D.idPadre 
-//)
-//Select  Id From SubDepartamentos");
-//            List<int> list = new List<int>();
-//            foreach(var item in listaDeptos)
-//            {
-//                list.Add(int.Parse(item.Id));
-//            }
-//            return list;
-//        }
-        public async Task<DepartmentWithUsers?> GetDepartmentWithUsers(int deptId)
+        public async Task<IEnumerable<DeptoUsersDto>?> GetSubDepartments(int deptId, int otAdmin)
+        {
+            bool existeDepto = await context.Departments.AnyAsync(d => d.Id == deptId);
+            if (existeDepto == false)
+            {
+                return null;
+            }
+
+            if(otAdmin == 1)
+            {
+                var depto = await context.Departments.Where(d => d.Id == deptId).Take(1).Select(d => new DeptoUsersDto
+                {
+                    Id = d.Id,
+                    DeptName = d.DeptName,
+                    Userinfos = d.Userinfos.Select(u => new UserinfoBNDto { Badgenumber = u.Badgenumber, Name = u.Name }).ToList()
+                }).ToListAsync();
+
+                if (depto is null || depto.Count == 0)
+                {
+                    return null;
+                }
+                return depto;
+            }
+            else if(otAdmin == 3)
+            {
+                var deptos = await context.Departments.Where(d => d.Id > 0).Select(d => new DeptoUsersDto
+                {
+                    Id = d.Id,
+                    DeptName = d.DeptName,
+                    Userinfos = d.Userinfos.Select(u => new UserinfoBNDto { Badgenumber = u.Badgenumber, Name = u.Name }).ToList()
+                }).ToListAsync();
+
+                if (deptos is null || deptos.Count == 0)
+                {
+                    return null;
+                }
+                
+                return deptos;
+            }
+            else
+            {
+                var listaDeptos = await context.Departments.FromSqlInterpolated(@$"EXEC [SubDepartamentos] {deptId}")
+                        .IgnoreQueryFilters().ToListAsync();
+                if (listaDeptos == null || listaDeptos.Count == 0)
+                {
+                    return null;
+                }
+                List<int> listIds = listaDeptos.Select(d => d.Id).ToList();
+
+                var subdeptos = await context.Departments.Where(d => listIds.Contains(d.Id)).Select(d => new DeptoUsersDto
+                 {
+                     Id = d.Id,
+                     DeptName = d.DeptName,
+                     Userinfos = d.Userinfos.Select(u => new UserinfoBNDto { Badgenumber = u.Badgenumber, Name = u.Name }).ToList()
+                 }).ToListAsync();
+                return subdeptos;
+            }
+        }
+
+
+        public async Task<DeptoUsersDto?> GetDepartmentWithUsers(int deptId)
         {
             bool existeDepto = await context.Departments.AnyAsync(d => d.Id == deptId);
             if(existeDepto == false)
@@ -44,25 +90,24 @@ namespace DataRepository.Implementations
                 return null;
             }
 
-            var deptos = await context.Departments.Include(d => d.Userinfos).Where(d => d.Id == deptId)
-                .Select(d => new DepartmentWithUsers
+            //  Con DTOs, es chévere y más eficiente que con AutoMapper
+            var deptos = await context.Departments.Where(d => d.Id == deptId).Take(1).Select(d => new DeptoUsersDto
             {
+                Id = d.Id,
                 DeptName = d.DeptName,
-                UsersNames = d.Userinfos.Select(u => u.Name).ToList(),
-            }).AsNoTracking().ToListAsync();
-
+                Userinfos = d.Userinfos.Select(u => new UserinfoBNDto { Badgenumber = u.Badgenumber, Name = u.Name }).ToList()
+            }).ToListAsync();
+           
+            if(deptos is null || deptos.Count == 0)
+            {
+                return null;
+            }
             return deptos[0];
 
-            //return await context.Departments.SingleOrDefault(d => d.Id == deptId).Include(d => d.Userinfos)
-            //    .Select(d => new DepartmentWithUsers
-            //    {
-            //        DeptName = d.DeptName,
-            //        UsersNames  = d.Userinfos.Select(u => u.Name).ToList(),
-            //    }).AsNoTracking().ToListAsync();
         }
         public async Task<List<DepartmentWithUsers>?> GetDepartmentsWithUsers()
         {
-            return await context.Departments.Include(d => d.Userinfos)
+            return await context.Departments.Where(d => d.Id > 0).Include(d => d.Userinfos)
                 .Select(d => new DepartmentWithUsers
                 {
                     DeptName = d.DeptName,
@@ -103,7 +148,7 @@ namespace DataRepository.Implementations
         public async Task<Department?> DeleteDepartment(int id)
         {
             var existingDepto = await context.Departments.SingleOrDefaultAsync(d => d.Id == id);
-            if (existingDepto == null)
+            if (existingDepto == null || existingDepto.IdPadre == 0)
             {
                 return null;
             }

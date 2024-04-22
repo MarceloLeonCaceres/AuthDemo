@@ -174,11 +174,40 @@ namespace ApiProperJwt3.Controllers.Auth
             return Ok("El usuario fue eliminado exitosamente.");
         }
 
+        [HttpPost("ConvertUsersinfoIntoAppUsers")]
+        [Authorize(Roles="admin")]
+        public async Task<IActionResult> CreateAppUsersFromExistingUserinfos()
+        {
+            var userinfosValidos = await _userinfoRepo.GetUserinfosValidosAppUser();
+            if (userinfosValidos == null || userinfosValidos.Count == 0)
+            {
+                return BadRequest("No hay empleados que cumplan los requisitos para ser usuarios de la app.");
+            }
+            IdentityResult? result = null;
+            try
+            {
+                result = await _authService.CreateAppUsersFromExistingUserinfos(userinfosValidos);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            if(result == null )
+            {
+                return BadRequest("Sí hay empleados pero no se pudo hacerlos usuarios de la app");
+            }
+            if(result.Succeeded == false)
+            {
+                return BadRequest($"Error: {result.Errors.FirstOrDefault().Description}");
+            }
+            return Ok("Los empleados que cumplían los requisitos, fueron creados como usuarios de la app.");
+        }
+
         [HttpDelete("DeleteUserinfo")]
         [Authorize(Roles = "th, admin")]
         public async Task<IActionResult> DeleteUserinfo(string badgenumber)
         {
-            //  Primero verifica que existan el Userinfo y el AppUser
+            //  Primero verifica que existan el Userinfo y el ApplicationUser
             bool existeUserinfo = await _userinfoRepo.ExisteUserinfo(badgenumber);
             bool? existeAppUser = await _authService.ExisteAppUser(badgenumber);
             if (existeUserinfo == false || existeAppUser == null || existeAppUser == false)
@@ -186,7 +215,7 @@ namespace ApiProperJwt3.Controllers.Auth
                 return NotFound("No se pudo eliminar el usuario por que no existe");
             }            
 
-            // Luego, elimina el AppUser en primer lugar
+            // Luego, elimina el ApplicationUser en primer lugar
             var response = await _authService.DeleteAppUser(badgenumber);
             if (response == null)
             {

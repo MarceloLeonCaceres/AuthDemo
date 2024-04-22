@@ -71,10 +71,10 @@ namespace DataRepository.Implementations
             return userinfos;
         }
 
-        //public async Task<List<SelectUserDeptoDto>?> GetUsersinfoSeleccionables(int deptId, int otAdmin)
-        public async Task<List<Userinfo>?> GetUsersinfoSeleccionables(int deptId, int otAdmin)
+        public async Task<List<SelectUserDeptoDto>?> GetUsersinfoSeleccionables(int deptId, int otAdmin)
         {
-            List<Userinfo>? userinfos;
+            //List<SelectUserDeptoDto>? userinfos;
+            List<Userinfo> userinfos;
             if(otAdmin == 1)
             {
                 userinfos = await context.Usersinfo
@@ -91,7 +91,6 @@ namespace DataRepository.Implementations
                 .Where(u => u.DepartmentId > 0)
                 .AsNoTracking()
                 .ToListAsync();
-                //return userinfos;
             }
             else
             {
@@ -99,7 +98,7 @@ namespace DataRepository.Implementations
                     .IgnoreQueryFilters().ToListAsync();
                 List<int> list = listaDeptos.Select(d => d.Id).ToList();
                 userinfos = await context.Usersinfo
-                    .Where(u => list.Contains(u.DepartmentId)).ToListAsync());
+                    .Where(u => list.Contains(u.DepartmentId)).ToListAsync();
             }
             return null;
         }
@@ -200,6 +199,24 @@ namespace DataRepository.Implementations
         {
             var result = await context.Usersinfo.AnyAsync(u => u.Badgenumber == badgenumber);
             return result;
+        }
+
+        public async Task<List<CreateAppUserDeUserinfoDto>?> GetUserinfosValidosAppUser()
+        {
+            var usersinfo = await context.Usersinfo
+                .Where(u => u.AppUserId == null && u.SSN != null && u.Email != null)
+                .Include(u => u.Department)
+                .Where(u => u.DepartmentId > 0)
+                .Select(u => new CreateAppUserDeUserinfoDto
+                {
+                    UserinfoId = u.UserinfoId,
+                    Badgenumber = u.Badgenumber,
+                    Email = u.Email,
+                    SSN = u.SSN
+                })
+                .AsNoTracking()
+                .ToListAsync();
+            return usersinfo;
         }
 
     }

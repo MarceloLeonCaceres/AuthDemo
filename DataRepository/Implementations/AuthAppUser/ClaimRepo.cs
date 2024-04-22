@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace DataRepository.Implementations.AuthAppUser
 {
     public class ClaimRepo(
-        UserManager<AppUser> userManager,
+        UserManager<ApplicationUser> userManager,
         RoleManager<Role> roleManager,
         ILogger<ClaimRepo> logger,
         IConfiguration config

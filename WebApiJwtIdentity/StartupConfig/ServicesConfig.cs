@@ -13,7 +13,7 @@ namespace ApiProperJwt3.StartupConfig
     {
         public static void AddIdentityServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddIdentity<AppUser, Role>(options =>
+            builder.Services.AddIdentity<ApplicationUser, Role>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = false;

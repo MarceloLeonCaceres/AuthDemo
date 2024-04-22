@@ -54,11 +54,13 @@ namespace ApiProperJwt3.Controllers
             var username = User.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
             var otadmin = User.Claims.FirstOrDefault(c => c.Type == "OtAdmin")?.Value;
             var deptId = User.Claims.FirstOrDefault(c => c.Type == "DeptId")?.Value;
-            var respuesta = await userinfoRepo.GetUsersinfoSeleccionables(int.Parse(deptId), int.Parse(otadmin));
             if (otadmin is null || deptId is null)
             {   
+                // Solo envia el userinfo correspondiente del ApplicationUser logeado
                 return NotFound("Algo salió mal");
             }
+            // Envia los usersinfo disponibles segun el otadmin y el depto del AddAdmin logeado
+            var respuesta = await userinfoRepo.GetUsersinfoSeleccionables(int.Parse(deptId), int.Parse(otadmin));
             return Ok(username);
         }
 

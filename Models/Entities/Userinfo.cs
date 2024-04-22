@@ -3,6 +3,7 @@ using Models.DTOs.AuthAppUser;
 using Models.Entities.AuthAppUser;
 using Models.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Entities
 {
@@ -20,7 +21,9 @@ namespace Models.Entities
         public int DepartmentId { get; set; }
         public Department Department { get; set; } = null!;
         public DateOnly? HiredDay { get; set; }
-        public AppUser? AppUser { get; set; }
+        [ForeignKey("AppUser")]
+        public string? AppUserId {  get; set; }
+        public ApplicationUser? AppUser { get; set; }
         
     }
 }

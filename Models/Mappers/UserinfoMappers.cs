@@ -31,5 +31,25 @@ namespace Models.Mappers
                 
             };
         }
+        public static Userinfo ToUserinfo(this CreateAppUserDeUserinfoDto createDeAppUser)
+        {
+            return new Userinfo
+            {
+                UserinfoId = createDeAppUser.UserinfoId,
+                Badgenumber = createDeAppUser.Badgenumber,
+                SSN = createDeAppUser.SSN,
+                Email = createDeAppUser.Email,
+            };
+        }
+
+        public static SelectUserDeptoDto ToSelectDto(this Userinfo userinfo)
+        {
+            return new SelectUserDeptoDto
+            {
+                Badgenumber = userinfo.Badgenumber,
+                Name = userinfo.Name,
+                DeptName = userinfo.Department.DeptName
+            };
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace DataRepository.Interfaces.AuthAppUser
 {
     public interface IRolesRepo
     {
-        Task<List<AppUser>> GetAllAppUsers();
+        Task<List<ApplicationUser>> GetAllAppUsers();
         Task<List<string>> GetAppUserRoles(string username); 
         Task<List<Role>> GetRolesAsync();
         Task<IdentityResult?> AddUserToRole(string username, string roleName);

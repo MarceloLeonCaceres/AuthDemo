@@ -9,7 +9,7 @@ using Models.Entities.Enums;
 
 namespace EfData
 {
-    public class AppDbContext : IdentityDbContext<AppUser, Role, string,
+    public class AppDbContext : IdentityDbContext<ApplicationUser, Role, string,
         IdentityUserClaim<string>, AppUserRole, IdentityUserLogin<string>,
         IdentityRoleClaim<string>,IdentityUserToken<string> >
     {
@@ -53,7 +53,7 @@ namespace EfData
                 .IsRequired();
             });
                         
-            modelBuilder.Entity<AppUser>(b =>
+            modelBuilder.Entity<ApplicationUser>(b =>
             {
                 // Primary key
                 b.HasKey( u => u.Id );

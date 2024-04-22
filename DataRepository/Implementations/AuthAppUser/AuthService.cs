@@ -18,7 +18,7 @@ namespace DataRepository.Implementations.AuthAppUser
 {
     public class AuthService(
         AppDbContext context,
-        UserManager<AppUser> userManager,
+        UserManager<ApplicationUser> userManager,
         RoleManager<Role> roleManager,
         IUserinfoRepo userinfoRepo,
         IConfiguration config,
@@ -82,7 +82,7 @@ namespace DataRepository.Implementations.AuthAppUser
                 return null;
             }
             
-            AppUser newAppUser = createAppAdmin.ToAppUserFromAppAdmin();
+            ApplicationUser newAppUser = createAppAdmin.ToAppUserFromAppAdmin();
             var createAdmin = await userManager.CreateAsync(newAppUser, createAppAdmin.Password);
             if (createAdmin.Succeeded == false)
             {
@@ -111,7 +111,7 @@ namespace DataRepository.Implementations.AuthAppUser
             }
             var userinfoNuevo = createAppUserDeCero.ToUserinfo();
             
-            AppUser newAppUser = createAppUserDeCero.ToAppUserFromCreate();
+            ApplicationUser newAppUser = createAppUserDeCero.ToAppUserFromCreate();
             var userinfoExistente = await context.Usersinfo.SingleOrDefaultAsync(u => u.Badgenumber == createAppUserDeCero.Badgenumber);
 
             using var transaction = await context.Database.BeginTransactionAsync();
@@ -151,7 +151,7 @@ namespace DataRepository.Implementations.AuthAppUser
             }
         }
 
-        private async Task<IdentityResult?> SetPerfilAppUser(AppUser appUser, PerfilAppAdminDto perfilAppUser)
+        private async Task<IdentityResult?> SetPerfilAppUser(ApplicationUser appUser, PerfilAppAdminDto perfilAppUser)
         {
             IdentityResult? result = null;
 
@@ -275,6 +275,51 @@ namespace DataRepository.Implementations.AuthAppUser
             }
         }
 
+        public async Task<IdentityResult?> CreateAppUsersFromExistingUserinfos(List<CreateAppUserDeUserinfoDto> userinfos)
+        {
+            IdentityResult result = null;
+            foreach(CreateAppUserDeUserinfoDto createAppUser in userinfos)
+            {
+                try
+                {
+                    var appUserExistente = await userManager.FindByNameAsync(createAppUser.Badgenumber);
+                    if (appUserExistente != null)
+                    {
+                        logger.LogWarning($"El usuario {createAppUser.Badgenumber} ya existe.");
+                        continue;
+                    }
+
+                    ApplicationUser newAppUser = createAppUser.ToAppUserFromCreateDeUserinfo();
+
+                    var userinfoExistente = await context.Usersinfo
+                        .SingleOrDefaultAsync(u => u.Badgenumber == createAppUser.Badgenumber);
+
+                    using var transaction = await context.Database.BeginTransactionAsync();
+                    var createUser = await userManager.CreateAsync(newAppUser, createAppUser.SSN);
+                    if (createUser.Succeeded == false)
+                    {
+                        logger.LogWarning("No se pudo crear al usuario");
+                        return createUser;
+                    }
+
+                    result = await userManager.AddToRoleAsync(newAppUser, "user");
+
+                    userinfoExistente!.AppUserId = newAppUser.Id;
+                    userinfoExistente!.AppUser = newAppUser;                  
+
+                    await context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    logger.LogInformation($"Se creó al usuario {userinfoExistente.Badgenumber} con perfil usuario");
+                    
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return result;
+            
+        }
         public async Task<bool?> ExisteAppUser(string username)
         {
             var result = await userManager.FindByNameAsync(username);
@@ -391,7 +436,7 @@ namespace DataRepository.Implementations.AuthAppUser
             return Convert.ToBase64String(randomNumber);
         }
 
-        private async Task<string> GenerateTokenString(AppUser appUser)
+        private async Task<string> GenerateTokenString(ApplicationUser appUser)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
@@ -409,7 +454,7 @@ namespace DataRepository.Implementations.AuthAppUser
             return tokenString;
         }
 
-        private async Task<List<Claim>> GetAllValidClaims(AppUser appUser)
+        private async Task<List<Claim>> GetAllValidClaims(ApplicationUser appUser)
         {
             var claims = new List<Claim>
             {
@@ -417,11 +462,11 @@ namespace DataRepository.Implementations.AuthAppUser
             };
 
             // Getting los claims que tenemos asignados para el usuario
-            var userClaims = await userManager.GetClaimsAsync((AppUser)appUser);
+            var userClaims = await userManager.GetClaimsAsync((ApplicationUser)appUser);
             claims.AddRange(userClaims);
 
             // Get el rol del usuario y agregarlo a los claims
-            var userRoles = await userManager.GetRolesAsync((AppUser)appUser);
+            var userRoles = await userManager.GetRolesAsync((ApplicationUser)appUser);
             foreach (var userRole in userRoles)
             {
                 var role = await roleManager.FindByNameAsync(userRole);
